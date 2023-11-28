@@ -25,8 +25,8 @@
    - [x] 生成“词云”图片
    - [ ] 生成“柱状图”图片（按照贴吧进行分类）
    - [ ] 可选择时间段生成图片
-- [] 导出自己的发帖记录
-- 使用GIthub Actions进行定时任务
+- [ ] 导出自己的发帖记录
+- [ ] 使用GIthub Actions定时执行
 
 ## Python异步编程
 - 参考： [异步编程入门教程 - aiotieba](https://aiotieba.cc/tutorial/async_start/)
