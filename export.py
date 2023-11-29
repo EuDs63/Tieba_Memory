@@ -53,7 +53,7 @@ async def export():
                 posts_data.append(post_info)
 
                 # 输出至json文件中
-                with open(f"posts.json", "w", encoding="utf-8") as f:
+                with open(f"output/posts.json", "w", encoding="utf-8") as f:
                     json.dump(posts_data, f, ensure_ascii=False, indent=2)
                 # 打印
                 #print(f"贴吧: {forum_name}: {text} ")
