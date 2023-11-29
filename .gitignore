@@ -1,5 +1,5 @@
 venv
 aiotieba.toml
-posts.json
+output/*
 wordcloud.png
 .idea
