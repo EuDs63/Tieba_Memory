@@ -106,9 +106,8 @@ def split_data_by_year():
         json.dump(files_data, f, ensure_ascii=False, indent=2)
 
 
-# 根据data生成饼状图
-def generate_pie_chart_by_data(data):
-    # 统计在每个贴吧的回复数
+# 统计在每个贴吧的回复数
+def count_post_per_forum(data):
     stats = {}
 
     for item in data:
@@ -116,6 +115,14 @@ def generate_pie_chart_by_data(data):
         if name not in stats:
             stats[name] = 0
         stats[name] += 1
+
+    return stats
+
+
+# 根据data生成饼状图
+def generate_pie_chart_by_data(data):
+    # 统计在每个贴吧的回复数
+    stats = count_post_per_forum(data)
 
     # 出于显示美观考虑，将占比小的贴吧合并为其他
     num_labels = 7  # 需要显示的标签数
@@ -173,3 +180,18 @@ def generate_pie_chart_every_year():
         # 保存图片
         result_plt.savefig(f"output/pie_{k}.png")
         result_plt.show()
+
+
+# 为每年的数据生成记录文件
+def generate_post_all_data():
+    # 读取json文件
+    with open("output/post_all.json", encoding='utf-8') as f:
+        data = json.load(f)
+    result = {}
+    for k, v in data.items():
+        year_data = count_post_per_forum(v)
+        # 添加总数
+        year_data["总计回复"] = len(v)
+        result[k] = year_data
+    with open(f"output/post_all_data.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
