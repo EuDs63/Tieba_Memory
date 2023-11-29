@@ -5,15 +5,13 @@ import jieba
 import numpy as np
 from wordcloud import WordCloud, ImageColorGenerator
 import matplotlib.pyplot as plt
-from PIL import Image #处理图片
+from PIL import Image  # 处理图片
 import datetime
 from concurrent.futures import ProcessPoolExecutor
 
-# 生成词云
-def generate_word_cloud(file_path):
-    # 读取json文件
-    data = json.load(open(file_path, encoding="utf-8"))
 
+# 根据data生成词云
+def generate_word_cloud_by_data(data):
     # 将文本数据拼接成一个长字符串
     text_data = " ".join(post["text"] for post in data)
 
@@ -24,7 +22,7 @@ def generate_word_cloud(file_path):
     # 停用词基于[stopwords/cn_stopwords.txt at master · goto456/stopwords](https://github.com/goto456/stopwords/blob/master/cn_stopwords.txt)
     # 添加了贴吧常用的表情符号
     stopwords = set()
-    content = [line.strip() for line in open('resources/cn_stopwords.txt','r',encoding="utf8").readlines()]
+    content = [line.strip() for line in open('resources/cn_stopwords.txt', 'r', encoding="utf8").readlines()]
     stopwords.update(content)
     # image_mask = Image.open("resources/huaji.jpg")
     # print(f"蒙版图片mode: {image_mask.mode}")
@@ -33,30 +31,54 @@ def generate_word_cloud(file_path):
     # 创建 WordCloud 对象
     wordcloud = WordCloud(width=480,
                           height=480,
-                          #mask=mask,
+                          # mask=mask,
                           background_color="white",
-                          #mode="RGB",
+                          # mode="RGB",
                           font_path='C:\Windows\Fonts\STZHONGS.ttf',
                           stopwords=stopwords,
                           max_words=100,
                           relative_scaling=0.8,
-                          #contour_width=1,
-                         ).generate(text_data)
+                          # contour_width=1,
+                          ).generate(text_data)
 
     # image_color = ImageColorGenerator(mask)
     # wordcloud.recolor(color_func=image_color)
 
     # 显示词云图
     plt.figure(figsize=(10, 5))
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
     plt.imshow(wordcloud, interpolation="bilinear")
     plt.axis("off")
-    plt.show()
+    return plt
 
-    # 保存词云图
-    wordcloud.to_file(f"output/wordcloud_{file_path}.png")
+
+# 从post文件生成词云
+def generate_word_cloud_from_file(file_path):
+    # 读取json文件
+    data = json.load(open(file_path, encoding="utf-8"))
+    result_plt = generate_word_cloud_by_data(data)
+    # 标题
+    result_plt.title(f"{file_path}词云图")
+    result_plt.show()
+    # wordcloud.to_file(f"output/wordcloud_{file_path}.png")
+
+
+# 为每年的数据生成词云
+def generate_word_cloud_every_year():
+    # 读取json文件
+    with open("output/post_all.json", encoding='utf-8') as f:
+        data = json.load(f)
+    for k, v in data.items():
+        result_plt = generate_word_cloud_by_data(v)
+        # 设置标题
+        result_plt.title(f"{k}年词云图")
+        # 保存图片
+        result_plt.savefig(f"output/wordcloud_{k}.png")
+        result_plt.show()
+
 
 # 根据年份拆分数据,输出到不同的json文件中
-def split_data_by_year(file_path):
+def split_data_by_year():
     # 读取json文件
     with open('output/posts.json', encoding='utf-8') as f:
         data = json.load(f)
@@ -75,13 +97,14 @@ def split_data_by_year(file_path):
         process(item)
 
     # 输出到对应的json文件中
-    for k,v in files_data.items():
+    for k, v in files_data.items():
         with open(f"output/post_{k}.json", "w", encoding="utf-8") as f:
             json.dump(v, f, ensure_ascii=False, indent=2)
 
     # 输出到总的json文件中
     with open(f"output/post_all.json", "w", encoding="utf-8") as f:
         json.dump(files_data, f, ensure_ascii=False, indent=2)
+
 
 # 根据data生成饼状图
 def generate_pie_chart_by_data(data):
@@ -117,7 +140,7 @@ def generate_pie_chart_by_data(data):
     fig1, ax1 = plt.subplots()
     ax1.pie(sizes,
             labels=labels,
-            #autopct='%1.1f%%',
+            # autopct='%1.1f%%',
             pctdistance=0.1,
             labeldistance=1.1,
             shadow=False,
@@ -125,8 +148,9 @@ def generate_pie_chart_by_data(data):
     ax1.axis('equal')
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
     # 创建图例
-    #plt.legend(labels, loc="best", bbox_to_anchor=(0.5, 0, 0.5, 1))
+    # plt.legend(labels, loc="best", bbox_to_anchor=(0.5, 0, 0.5, 1))
     return plt
+
 
 # 由文件生成饼状图
 def generate_pie_chart_from_file(file_path):
@@ -136,20 +160,16 @@ def generate_pie_chart_from_file(file_path):
     result_plt = generate_pie_chart_by_data(data)
     result_plt.show()
 
+
 # 为每年的数据生成饼状图
 def generate_pie_chart_every_year():
     # 读取json文件
     with open("output/post_all.json", encoding='utf-8') as f:
         data = json.load(f)
-    for k,v in data.items():
+    for k, v in data.items():
         result_plt = generate_pie_chart_by_data(v)
         # 设置标题
         result_plt.title(f"{k}年回复贴吧分布")
         # 保存图片
         result_plt.savefig(f"output/pie_{k}.png")
         result_plt.show()
-
-
-#split_data_by_year("output/posts.json")
-#generate_pie_chart_from_file("output/post_2017.json")
-generate_pie_chart_every_year()
