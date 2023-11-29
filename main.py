@@ -1,6 +1,6 @@
 from analyze import *
 
-# 处理数据
+# 处理数据,必须先执行
 #split_data_by_year("output/posts.json")
 
 # 从文件生成词云图
