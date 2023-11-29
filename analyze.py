@@ -2,8 +2,10 @@
 
 import json
 import jieba
-from wordcloud import WordCloud
+import numpy as np
+from wordcloud import WordCloud, ImageColorGenerator
 import matplotlib.pyplot as plt
+from PIL import Image #处理图片
 
 # 读取json文件
 data = json.load(open("posts.json", encoding="utf-8"))
@@ -20,14 +22,25 @@ text_data = " ".join(jieba.cut(text_data))
 stopwords = set()
 content = [line.strip() for line in open('resources/cn_stopwords.txt','r',encoding="utf8").readlines()]
 stopwords.update(content)
+# image_mask = Image.open("resources/huaji.jpg")
+# print(f"蒙版图片mode: {image_mask.mode}")
+# mask = np.array(image_mask)
 
 # 创建 WordCloud 对象
-wordcloud = WordCloud(width=800,
-                      height=400,
+wordcloud = WordCloud(width=480,
+                      height=480,
+                      #mask=mask,
                       background_color="white",
+                      mode="RGB",
                       font_path='C:\Windows\Fonts\STZHONGS.ttf',
-                      stopwords=stopwords
+                      stopwords=stopwords,
+                      max_words=100,
+                      relative_scaling=0.8,
+                      #contour_width=1,
                      ).generate(text_data)
+
+# image_color = ImageColorGenerator(mask)
+# wordcloud.recolor(color_func=image_color)
 
 # 显示词云图
 plt.figure(figsize=(10, 5))
