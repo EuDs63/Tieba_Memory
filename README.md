@@ -26,7 +26,8 @@
    - [x] 生成“饼状图”图片（按照贴吧进行分类）
    - [ ] 可选择时间段生成图片
 - [ ] 导出自己的发帖记录
-- [ ] 使用GIthub Actions定时执行
+- [ ] 使用Github Actions定时执行
+- [ ] 导出特定帖子的回复记录并进行一定的处理
 
 ## Python异步编程
 - 参考： [异步编程入门教程 - aiotieba](https://aiotieba.cc/tutorial/async_start/)
