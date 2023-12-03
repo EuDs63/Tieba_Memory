@@ -1,7 +1,7 @@
 from analyze import *
 
 # 处理数据,必须先执行
-#split_data_by_year("output/posts.json")
+#split_data_by_year()
 
 # 从文件生成词云图
 #generate_word_cloud_from_file("output/post_2017.json")

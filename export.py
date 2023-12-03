@@ -3,6 +3,7 @@
 import asyncio
 import json
 import aiotieba as tb
+import os
 
 
 async def export():
@@ -51,6 +52,10 @@ async def export():
 
                 # 添加字典到列表
                 posts_data.append(post_info)
+
+                #检查是否存在output文件夹，没有则创建
+                if not os.path.exists("output"):
+                    os.mkdir("output")
 
                 # 输出至json文件中
                 with open(f"output/posts.json", "w", encoding="utf-8") as f:
